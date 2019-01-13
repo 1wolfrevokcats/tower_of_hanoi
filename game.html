@@ -1,0 +1,766 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Tower of Hanoi</title>
+<style>
+body{
+overflow: hidden;
+}
+
+#canvo{
+	position: fixed;
+	top:80px;
+	left: 300px;
+}
+
+.disk{
+	border-radius: 10px;
+}
+
+.movclass{
+	position: relative;
+	top:20px;
+	left:700px;
+}
+
+/*-------------------------- new css added here ---------------------------------*/
+
+/* The Modal (background) */
+.modal 
+{
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+  -webkit-animation-name: fadeIn; 
+  -webkit-animation-duration: 0.4s;
+  -moz-animation-name : fadeIn;
+  -moz-animation-duration : 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s
+}
+
+/* Modal Content */
+.modal-content 
+{
+  position: fixed;
+  bottom: 0;
+  top:100px;
+  width: 100%;
+  color: rgba(255,255,255,1);
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slideIn;
+  animation-duration: 0.4s
+}
+
+/* The Close Button */
+#close{
+  color: black;
+  font-size: 20px;
+  background-color: #b3ffb3;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  text-align:center;
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+@-webkit-keyframes slideIn {
+  from {bottom: -300px; opacity: 0} 
+  to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+  from {bottom: -300px; opacity: 0}
+  to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+.resetdiv
+{
+	position: relative;
+	top:5px;
+	left:400px;
+}
+</style>
+
+</head>
+<body>
+	<!-- <button onclick="drawlayout()">Reset</button> -->
+	<div class="movclass">Moves : <span id="move">0</span></div>
+	<div class="resetdiv"><button class="reset" onclick="reset()">Reset game</button></div>
+<canvas height="500" width="700" id="canvo" style="border:1px solid #000000;" oncontextmenu="return false">
+	Your browser does  not support canvas !!!!
+</canvas>
+
+<!------------------------------ start screen --------------------->
+<div id="myModal" class="modal">
+   <!-- Modal content -->
+   <div class="modal-content">
+      <div class="modal-header">
+         <!-- <span class="close">&times;</span> -->
+         <h2>Tower of Hanoi</h2>
+      </div>
+      <div class="modal-body">
+         <h3>Instructions</h3>
+         <ul style="list-style-type:disc">
+            <li>Use left mouse click to select source tower and right mouse click to select target tower.</li>
+            <li>Stack discs on middle tower.</li>
+            <li>Only a smaller disc can rest on big disc.</li>
+         </ul>
+         <button id="close">Start game</button>
+      </div>
+   </div>
+</div>
+
+
+<!------------------------------ close screen --------------------->
+
+<div id="myModal1" class="modal">
+   	<div class="modal-content">
+      	<div class="modal-header">
+        	<h2>Tower of Hanoi</h2>
+      	</div>
+      	<div class="modal-body">
+      		<div id="msg"><div>
+        	<div>Your score is <div id="endscore"></div><div>
+        	<div>Moves taken <div id="endmoves"></div><div>
+        	<button id="try">Play again</button>
+      	</div>
+   	</div>
+</div>
+
+<!------------------------------ close screen ------------------- -->
+
+<script>
+var c = document.getElementById("canvo");
+var ctx = c.getContext("2d");
+var maxscore = 100;
+var scoreobj = {score:0,move:0,msg:""};
+var base = 280;
+var discheight = 10;
+var discwidth = 80;
+var bar1=[];
+var bar2=[];
+var bar3=[];
+var srctrgt = [2];
+srctrgt[0] = null;
+srctrgt[1] = null;
+discholder = [];
+var popelement;
+var noofdisc = 4;
+var moves=0;
+var calscore = 0;
+
+ctx.font = "30px Arial";
+ctx.strokeText("Tower of Hanoi",10,50);
+
+c.addEventListener('mousedown', gettarget, true);
+
+var modal = document.getElementById('myModal');
+
+var endscreen = document.getElementById('myModal1');
+
+var close = document.getElementById("close");
+
+var tryagain = document.getElementById("try");
+
+modal.style.display = "block";
+
+endscreen.style.display = "none";
+
+var disc1 = {x:c.width/4-110,y:base-10,width:discwidth,height:discheight,disknum:1,drawdisc: function(){ ctx.beginPath(); ctx.rect(this.x,this.y,this.width,this.height); ctx.fillStyle = 'green'; ctx.fill(); }};
+
+var disc2 = {x:c.width/4-100,y:base-20,width:discwidth-20,height:discheight,disknum:2,drawdisc: function(){ ctx.beginPath(); ctx.rect(this.x,this.y,this.width,this.height); ctx.fillStyle = 'yellow'; ctx.fill(); }};
+
+var disc3 = {x:c.width/4-90,y:base-30,width:discwidth-40,height:discheight,disknum:3,drawdisc: function(){ ctx.beginPath(); ctx.rect(this.x,this.y,this.width,this.height); ctx.fillStyle = 'red'; ctx.fill(); }};
+
+var disc4 = {x:c.width/4-80,y:base-40,width:discwidth-60,height:discheight,disknum:4,drawdisc: function(){ ctx.beginPath(); ctx.rect(this.x,this.y,this.width,this.height); ctx.fillStyle = 'orange'; ctx.fill(); }};
+
+function drawbars()
+{
+	ctx.clearRect(0,0,c.width,c.height);
+	ctx.fillStyle = 'black';
+	
+	ctx.beginPath();
+	ctx.rect(100, 180, 10, 100);  //vertical bar
+	ctx.fill();
+
+	ctx.beginPath();
+	ctx.rect(300, 180, 10, 100);    //vertical bar
+	ctx.fill();
+
+	ctx.beginPath();
+	ctx.rect(500, 180, 10, 100);    //vertical bar
+	ctx.fill();
+
+	ctx.beginPath();
+	ctx.rect(20, 280, 600, 10);     //horizontal bar
+	ctx.fill();
+//ctx.stroke();
+}
+
+close.onclick = function()
+{
+	modal.style.display = "none";
+}
+
+tryagain.onclick = function()
+{
+	reset();
+	endscreen.style.display = "none";
+}
+
+function drawlayout()
+{
+	drawbars();
+	bar1=[];
+	bar2=[];
+	bar3=[];
+
+	disc1.x = c.width/4-110;
+	disc1.y = base-10;
+
+	disc2.x = c.width/4-100;
+	disc2.y = base-20;
+
+	disc3.x = c.width/4-90;
+	disc3.y = base-30;
+
+	disc4.x = c.width/4-80;
+	disc4.y = base-40;
+
+	bar1=[disc1,disc2,disc3,disc4];
+
+	for(var i=0;i<bar1.length;i++)
+ 	{
+ 		bar1[i].drawdisc();
+ 	}
+}
+
+function animatedisc(elem,target)
+{
+	//console.log(elem);
+	//console.log(target);
+}
+
+function gettarget(evt)
+{    
+    if((evt.clientX >= 400 && evt.clientX <= 410) && (evt.clientY >= 260 && evt.clientY <= 360))
+    {
+     	if(evt.button == 0)
+     	{
+     		srctrgt[0] = 1;
+     	}
+     	else if(evt.button == 2)
+     	{
+     		srctrgt[1] = 1;
+     		movethedisc(srctrgt);
+     	}
+    }
+    else if((evt.clientX >= 600 && evt.clientX <= 610) && (evt.clientY >= 260 && evt.clientY <= 360))
+    {
+     	if(evt.button == 0)
+     	{
+     		srctrgt[0] = 2;
+     	}
+     	else if(evt.button == 2)
+     	{
+     		srctrgt[1] = 2;
+     		movethedisc(srctrgt);
+     	}
+    }
+    else if((evt.clientX >= 800 && evt.clientX <= 810) && (evt.clientY >= 260 && evt.clientY <= 360))
+    {
+     	if(evt.button == 0)
+     	{
+     		srctrgt[0] = 3;
+     	}
+     	else if(evt.button == 2)
+     	{
+     		srctrgt[1] = 3;
+     		movethedisc(srctrgt);
+     	}
+    }
+}
+
+function checkgame(nosofmoves)
+{
+	console.log("---------------------------------"+nosofmoves);
+	var minmoves = Math.pow(2,noofdisc) - 1;
+	var x = (nosofmoves - minmoves);
+	// console.log("---------------------------------"+minmoves);
+	if(nosofmoves >= minmoves )
+	{
+	    if(bar2.length == 4)
+	    {
+          	if((bar2[bar2.length-4].disknum < bar2[bar2.length-3].disknum) && (bar2[bar2.length-3].disknum < bar2[bar2.length-2].disknum) && (bar2[bar2.length-2].disknum < bar2[bar2.length-1].disknum))
+          	{
+                calscore = (maxscore - (x*10));
+                if(calscore <= 0)
+                {
+                	//javascript.void(0);
+                	event.preventDefault();
+                }
+                else if(calscore < maxscore)
+                {
+                	// scoreobj.score = calscore;
+                	// scoreobj.move = nosofmoves;
+                	// scoreobj.msg = "You can do better !!!!";
+                	endscreen.style.display = "block";
+                	document.getElementById("msg").innerHTML = "You can do better !!!!";
+                	document.getElementById("endscore").innerHTML = calscore;
+                	document.getElementById("endmoves").innerHTML = nosofmoves;
+                	//return scoreobj;
+                }
+                else
+                {
+                	// scoreobj.score = calscore;
+                	// scoreobj.move = nosofmoves;
+                	// scoreobj.msg = "Well done !!!";
+                	endscreen.style.display = "block";
+                	document.getElementById("msg").innerHTML = "Well done !!!";
+                	document.getElementById("endscore").innerHTML = maxscore;
+                	document.getElementById("endmoves").innerHTML = nosofmoves;
+                	//return scoreobj;
+                }
+            }     
+	    }
+ 	    else
+ 	    {
+ 	    	event.preventDefault();
+	    }
+    }
+    else if(nosofmoves > (minmoves*2))
+    {
+        calscore = (maxscore - (x*10));
+        endscreen.style.display = "block";
+    	document.getElementById("msg").innerHTML = "You can do better !!!";
+        document.getElementById("endscore").innerHTML = calscore;
+        document.getElementById("endmoves").innerHTML = nosofmoves;
+    }
+    else
+    {
+       event.preventDefault();	
+    } // end of outer if
+}
+
+function reset()
+{
+	moves = 0;
+	scoreobj = {score:0,move:0,msg:""};
+	ctx.clearRect(0,0,c.width,c.height);
+	//console.log("in reset function");
+	drawlayout();
+	document.getElementById("move").innerHTML= moves;
+}
+
+function movethedisc(srcntarget)
+{
+	console.log(srcntarget);
+	if((srcntarget[0] != null || srcntarget[0] != undefined) && (srcntarget[1] != null || srcntarget[1] != undefined))
+	{
+	 	//popelement = bar[0].pop();
+	 	if(srcntarget[0] === srcntarget[1])
+	 	{
+	 		event.preventDefault();
+	 	}
+	 	else
+	 	{
+	 		// --------------------------- for bar1 ------------------------------------
+	 		if(srcntarget[0] == 1)  // source is bar1 
+	 		{			
+	 			//ctx.clearRect(popelement.x,popelement.y,popelement.width,popelement.height);
+
+	 			// target is bar1
+	 			if(srcntarget[1] == 1)  //if source and target is bar1
+	 			{
+	 				event.preventDefault();
+	 			}
+	 			else if(srcntarget[1] == 2)  //if source is bar 1 and target is bar2
+	 			{
+					if(bar1.length == 0)
+					{
+						event.preventDefault();
+					}
+					else 
+					{	 				
+						if(bar2.length == 0)
+						{
+							popelement = bar1.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar2.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+	 					}
+						else if(bar2[bar2.length-1].disknum < bar1[bar1.length-1].disknum)	
+						{
+							popelement = bar1.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar2.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else
+						{
+							event.preventDefault();
+						}
+	 				}
+	 			}
+	 			else if(srcntarget[1] == 3)  //if source is bar 1 and target is bar3
+	 			{
+	 				if(bar1.length == 0)
+					{
+						event.preventDefault();
+					}
+					else
+					{
+	 					if(bar3.length == 0)
+						{
+							popelement = bar1.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar3.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else if(bar3[bar3.length-1].disknum < bar1[bar1.length-1].disknum)	
+						{
+							popelement = bar1.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar3.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else
+						{
+							event.preventDefault();
+						}
+	 				}
+	 			}
+	 		}
+
+	 		// --------------------------- for bar2 ------------------------------------
+
+	 		// if source is bar2
+	 		else if(srcntarget[0] == 2)
+	 		{
+	 			if(srcntarget[1] == 1) //if source is bar 2 and target is bar1
+	 			{
+	 				if(bar2.length == 0)
+					{
+						event.preventDefault();
+					}
+					else
+					{	 				
+	 					if(bar1.length == 0)
+						{
+							popelement = bar2.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar1.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else if(bar1[bar1.length-1].disknum < bar2[bar2.length-1].disknum)	
+						{
+							popelement = bar2.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar1.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else
+						{
+							event.preventDefault();
+						}				
+	 				}
+	 			}
+	 			else if(srcntarget[1] == 2)  // if source and target is bar2
+	 			{
+	 				event.preventDefault();
+	 			}
+	 			else if(srcntarget[1] == 3)  //if source is bar 2 and target is bar3
+	 			{
+	 				if(bar2.length == 0)
+					{
+						event.preventDefault();
+					}
+					else
+					{	
+	 					if(bar3.length == 0)
+						{
+							popelement = bar2.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar3.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else if(bar3[bar3.length-1].disknum < bar2[bar2.length-1].disknum)	
+						{
+							popelement = bar2.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar3.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else
+						{
+							event.preventDefault();
+						}
+	 				}
+	 			}
+	 		}
+
+	 		// --------------------------- for bar3 ------------------------------------
+	 		//if source is bar3
+	 		else if(srcntarget[0] == 3)
+	 		{	
+	 			if(srcntarget[1] == 1)   //if source is bar3 and target is bar1
+	 			{
+	 				if(bar3.length == 0)
+					{
+						event.preventDefault();
+					}
+					else
+					{	 			
+	 					if(bar1.length == 0)
+						{
+							popelement = bar3.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar1.push(popelement);
+	 						moves = moves + 1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else if(bar1[bar1.length-1].disknum < bar3[bar3.length-1].disknum)	
+						{
+							popelement = bar3.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar1.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else
+						{
+							event.preventDefault();
+						}
+	 				}
+	 			}
+	 			else if(srcntarget[1] == 2)  //if source is bar3 and target is bar2
+	 			{
+	 				if(bar3.length == 0)
+					{
+						event.preventDefault();
+					}
+					else
+					{	 				
+	 					if(bar2.length == 0)
+						{
+							popelement = bar3.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar2.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else if(bar2[bar2.length-1].disknum < bar3[bar3.length-1].disknum)	
+						{
+							popelement = bar3.pop();
+	 						animatedisc(popelement,srcntarget);
+	 						bar2.push(popelement);
+	 						moves = moves+1;
+	 						ctx.clearRect(0,0,c.width,c.height);
+	 						renderframe(popelement,srcntarget);
+	 						document.getElementById("move").innerHTML= moves;
+	 						checkgame(moves);
+						}
+						else
+						{
+							event.preventDefault();
+						}
+	 				}
+	 			}
+	 			else if(srcntarget[1] == 3)  //if source and target is bar3
+	 			{
+	 				event.preventDefault();
+	 			}
+	 		}
+
+	 		// ctx.clearRect(0,0,c.width,c.height);
+	 		
+	 		// renderframe(popelement,srcntarget);
+
+	 		// document.getElementById("move").innerHTML= moves;
+	 	}
+	}
+	 else
+	{
+	 	event.preventDefault();
+	}
+}
+
+function drawdiscs()
+{
+	srctrgt = [];
+
+	if(bar1.length != 0)
+	{
+		for(var i =0; i < bar1.length; i++)
+		{
+			bar1[i].drawdisc();
+		}
+	}
+	if(bar2.length !=0)
+	{
+		for(var i =0; i < bar2.length; i++)
+		{
+			bar2[i].drawdisc();
+		}
+	}
+	if(bar3.length != 0)
+	{
+		for(var i =0; i < bar3.length; i++)
+		{
+			bar3[i].drawdisc();
+		}
+	}
+}
+
+function renderframe(elem,target)
+{
+	console.log("elem-------------"+JSON.stringify(elem)+"target---------------------"+target);
+	if(target.length !=0 && elem.length != 0)
+	{
+		/* -------------- for bar1 ----------------*/
+
+		if(target[1] == 1 && elem.disknum == 1)
+		{
+			elem.x = c.width/4-110;
+			elem.y = base - (10*(bar1.length));
+		}
+		else if(target[1] == 1 && elem.disknum == 2)
+		{
+			elem.x = c.width/4-100;
+			elem.y = base - (10*(bar1.length));
+		}
+		else if(target[1] == 1 && elem.disknum == 3)
+		{
+			elem.x = c.width/4-90;
+			elem.y = base - (10*(bar1.length));
+		}
+		else if(target[1] == 1 && elem.disknum == 4)
+		{
+			elem.x = c.width/4-80;
+			elem.y = base - (10*(bar1.length));
+		}
+
+		/* -------------- for bar2 ----------------*/
+
+ 		else if(target[1] == 2 && elem.disknum == 1)
+ 		{
+			elem.x = c.width/2-85;
+			elem.y = base - (10*(bar2.length));
+		}
+		else if(target[1] == 2 && elem.disknum == 2)
+ 		{
+			elem.x = c.width/2-75;
+			elem.y = base - (10*(bar2.length));
+		}
+		else if(target[1] == 2 && elem.disknum == 3)
+ 		{
+			elem.x = c.width/2-65;
+			elem.y = base - (10*(bar2.length));
+		}
+		else if(target[1] == 2 && elem.disknum == 4)
+ 		{
+			elem.x = c.width/2-55;
+			elem.y = base - (10*(bar2.length));
+		}
+
+		/* -------------- for bar3 ----------------*/
+
+ 		else if(target[1] == 3 && elem.disknum == 1)
+		{
+			elem.x = c.width/2+115;
+			elem.y = base - (10*(bar3.length));
+		}
+		else if(target[1] == 3 && elem.disknum == 2)
+		{
+			elem.x = c.width/2+125;
+			elem.y = base - (10*(bar3.length));
+		}
+		else if(target[1] == 3 && elem.disknum == 3)
+		{
+			elem.x = c.width/2+135;
+			elem.y = base - (10*(bar3.length));
+		}	
+		else if(target[1] == 3 && elem.disknum == 4)
+		{
+			elem.x = c.width/2+145;
+			elem.y = base - (10*(bar3.length));
+		}
+		drawbars();
+		drawdiscs();
+	}
+	else
+	{
+		event.preventDefault();
+	}
+}
+
+drawlayout();
+
+</script>
+
+</body>
+</html>
