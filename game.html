@@ -25,7 +25,7 @@ overflow: hidden;
 
 /*-------------------------- new css added here ---------------------------------*/
 
-/* The Modal (background) */
+/* The Modal (background) for start screen */
 .modal 
 {
   display: none; 
@@ -35,6 +35,30 @@ overflow: hidden;
   top: 0;
   width: 100%; 
   height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+  -webkit-animation-name: fadeIn; 
+  -webkit-animation-duration: 0.4s;
+  -moz-animation-name : fadeIn;
+  -moz-animation-duration : 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s;
+  font-family: 'Lucida Sans';
+}
+
+
+/* The Modal (background) for end /  greeting screen */
+.modal1
+{
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  font-family: 'Lucida Sans';
   overflow: auto; 
   background-color: rgb(0,0,0); 
   background-color: rgba(0,0,0,0.4); 
@@ -76,6 +100,9 @@ overflow: hidden;
 
 .modal-body {padding: 2px 16px;}
 
+
+/* animation for modal box appearance */
+
 @-webkit-keyframes slideIn {
   from {bottom: -300px; opacity: 0} 
   to {bottom: 0; opacity: 1}
@@ -109,6 +136,8 @@ overflow: hidden;
 	<!-- <button onclick="drawlayout()">Reset</button> -->
 	<div class="movclass">Moves : <span id="move">0</span></div>
 	<div class="resetdiv"><button class="reset" onclick="reset()">Reset game</button></div>
+
+	<!-- ------------- canvas element to render/paint animation------------------ -->
 <canvas height="500" width="700" id="canvo" style="border:1px solid #000000;" oncontextmenu="return false">
 	Your browser does  not support canvas !!!!
 </canvas>
@@ -136,15 +165,15 @@ overflow: hidden;
 
 <!------------------------------ close screen --------------------->
 
-<div id="myModal1" class="modal">
+<div id="myModal1" class="modal1">
    	<div class="modal-content">
       	<div class="modal-header">
         	<h2>Tower of Hanoi</h2>
       	</div>
       	<div class="modal-body">
-      		<div id="msg"><div>
-        	<div>Your score is <div id="endscore"></div><div>
-        	<div>Moves taken <div id="endmoves"></div><div>
+      		<div id="msg"></div>
+        	<div id="endscore"></div>
+        	<div id="endmoves"></div>
         	<button id="try">Play again</button>
       	</div>
    	</div>
@@ -153,27 +182,31 @@ overflow: hidden;
 <!------------------------------ close screen ------------------- -->
 
 <script>
-var c = document.getElementById("canvo");
-var ctx = c.getContext("2d");
-var maxscore = 100;
-var scoreobj = {score:0,move:0,msg:""};
-var base = 280;
-var discheight = 10;
-var discwidth = 80;
-var bar1=[];
+var c = document.getElementById("canvo");   
+var ctx = c.getContext("2d");  // to set animation to render
+var score;
+var msg;
+var base = 280;   // define disk base ..
+var discheight = 10;     // define disk height
+var discwidth = 80; 	// define disk width
+var bar1=[];			//used to store disks
 var bar2=[];
 var bar3=[];
-var srctrgt = [2];
-srctrgt[0] = null;
-srctrgt[1] = null;
-discholder = [];
-var popelement;
-var noofdisc = 4;
-var moves=0;
-var calscore = 0;
+var srctrgt = [2];		// array of length 2 used to store , mouse bar selected and targeted bar
+srctrgt[0] = null;		// store src bar clicked
+srctrgt[1] = null;		// store target bar clicked
+var popelement;			// element that will be poped and pushed
+var noofdisc = 4;		// number of disks, defined static
+var moves=0;			// moves taken
+
 
 ctx.font = "30px Arial";
 ctx.strokeText("Tower of Hanoi",10,50);
+
+//-------------  drawdisc function is written in the variable --------------
+
+
+// add action listener to canvas element, gettarget is function to invoke, boolean value to invoke the function
 
 c.addEventListener('mousedown', gettarget, true);
 
@@ -185,9 +218,14 @@ var close = document.getElementById("close");
 
 var tryagain = document.getElementById("try");
 
+/*  ----------- for hidding model ---------*/ 
+
 modal.style.display = "block";
 
 endscreen.style.display = "none";
+
+
+/*  ----------- describing disks ---------*/ 
 
 var disc1 = {x:c.width/4-110,y:base-10,width:discwidth,height:discheight,disknum:1,drawdisc: function(){ ctx.beginPath(); ctx.rect(this.x,this.y,this.width,this.height); ctx.fillStyle = 'green'; ctx.fill(); }};
 
@@ -196,6 +234,9 @@ var disc2 = {x:c.width/4-100,y:base-20,width:discwidth-20,height:discheight,disk
 var disc3 = {x:c.width/4-90,y:base-30,width:discwidth-40,height:discheight,disknum:3,drawdisc: function(){ ctx.beginPath(); ctx.rect(this.x,this.y,this.width,this.height); ctx.fillStyle = 'red'; ctx.fill(); }};
 
 var disc4 = {x:c.width/4-80,y:base-40,width:discwidth-60,height:discheight,disknum:4,drawdisc: function(){ ctx.beginPath(); ctx.rect(this.x,this.y,this.width,this.height); ctx.fillStyle = 'orange'; ctx.fill(); }};
+
+
+/*  ----------- for drawing black bars ---------*/ 
 
 function drawbars()
 {
@@ -231,6 +272,12 @@ tryagain.onclick = function()
 	endscreen.style.display = "none";
 }
 
+
+
+/*  ------------------ for drawing disks, default they rest on first bar
+
+bar 1,2,3 represents the black bars. used to push and pop disks
+ ---------------*/
 function drawlayout()
 {
 	drawbars();
@@ -258,16 +305,23 @@ function drawlayout()
  	}
 }
 
+/*------------ function for animation --------------------*/
+
 function animatedisc(elem,target)
 {
 	//console.log(elem);
 	//console.log(target);
 }
 
+
+/* --------------- function to check if the mouse is clicked on the bar only -------------------*/
+
 function gettarget(evt)
 {    
+	// -------- if clicked on first bar ----------------------------
     if((evt.clientX >= 400 && evt.clientX <= 410) && (evt.clientY >= 260 && evt.clientY <= 360))
     {
+		// -------- evt.button gives mouse button (click, left right , middle) etc ----------------------------
      	if(evt.button == 0)
      	{
      		srctrgt[0] = 1;
@@ -278,6 +332,7 @@ function gettarget(evt)
      		movethedisc(srctrgt);
      	}
     }
+		// -------- if clicked on first bar ----------------------------
     else if((evt.clientX >= 600 && evt.clientX <= 610) && (evt.clientY >= 260 && evt.clientY <= 360))
     {
      	if(evt.button == 0)
@@ -290,6 +345,7 @@ function gettarget(evt)
      		movethedisc(srctrgt);
      	}
     }
+		// -------- if clicked on first bar ----------------------------
     else if((evt.clientX >= 800 && evt.clientX <= 810) && (evt.clientY >= 260 && evt.clientY <= 360))
     {
      	if(evt.button == 0)
@@ -304,66 +360,47 @@ function gettarget(evt)
     }
 }
 
+
+	// -------- calculate score, display message ----------------------------
 function checkgame(nosofmoves)
 {
 	console.log("---------------------------------"+nosofmoves);
 	var minmoves = Math.pow(2,noofdisc) - 1;
-	var x = (nosofmoves - minmoves);
-	// console.log("---------------------------------"+minmoves);
-	if(nosofmoves >= minmoves )
-	{
-	    if(bar2.length == 4)
+	var color ;
+
+	if(bar2.length == noofdisc)
 	    {
-          	if((bar2[bar2.length-4].disknum < bar2[bar2.length-3].disknum) && (bar2[bar2.length-3].disknum < bar2[bar2.length-2].disknum) && (bar2[bar2.length-2].disknum < bar2[bar2.length-1].disknum))
-          	{
-                calscore = (maxscore - (x*10));
-                if(calscore <= 0)
-                {
-                	//javascript.void(0);
-                	event.preventDefault();
-                }
-                else if(calscore < maxscore)
-                {
-                	// scoreobj.score = calscore;
-                	// scoreobj.move = nosofmoves;
-                	// scoreobj.msg = "You can do better !!!!";
-                	endscreen.style.display = "block";
-                	document.getElementById("msg").innerHTML = "You can do better !!!!";
-                	document.getElementById("endscore").innerHTML = calscore;
-                	document.getElementById("endmoves").innerHTML = nosofmoves;
-                	//return scoreobj;
-                }
-                else
-                {
-                	// scoreobj.score = calscore;
-                	// scoreobj.move = nosofmoves;
-                	// scoreobj.msg = "Well done !!!";
-                	endscreen.style.display = "block";
-                	document.getElementById("msg").innerHTML = "Well done !!!";
-                	document.getElementById("endscore").innerHTML = maxscore;
-                	document.getElementById("endmoves").innerHTML = nosofmoves;
-                	//return scoreobj;
-                }
-            }     
-	    }
- 	    else
- 	    {
- 	    	event.preventDefault();
-	    }
-    }
-    else if(nosofmoves > (minmoves*2))
-    {
-        calscore = (maxscore - (x*10));
-        endscreen.style.display = "block";
-    	document.getElementById("msg").innerHTML = "You can do better !!!";
-        document.getElementById("endscore").innerHTML = calscore;
-        document.getElementById("endmoves").innerHTML = nosofmoves;
-    }
-    else
-    {
-       event.preventDefault();	
-    } // end of outer if
+			score = 100*(minmoves/nosofmoves);
+			if(score == 100)
+			{
+				msg = "Excellent!!! <p>You have completed the game in minimum number of moves</p>";
+				color = "green";
+			}
+			else if(score >= 80 && score <99)
+			{
+				msg = "Good job";
+				color = "yellow";
+			}
+			else if(score >= 60 && score <=80)
+			{
+				msg = "Fine job";
+				color = "orange";
+			}
+			else
+			{
+				msg = "You can do better !!!!";
+				color = "red";
+			}
+
+		endscreen.style.display = "block";
+        document.getElementById("msg").innerHTML = msg;
+		document.getElementById("msg").style.color = color;
+        document.getElementById("endscore").innerHTML = "Your efficiency is " + score;
+    	document.getElementById("endmoves").innerHTML = "Moves taken " + nosofmoves;
+		}
 }
+
+// ----------- reset the game
 
 function reset()
 {
@@ -375,6 +412,8 @@ function reset()
 	document.getElementById("move").innerHTML= moves;
 }
 
+
+// ----------- pushes and pops disks and repaints animation
 function movethedisc(srcntarget)
 {
 	console.log(srcntarget);
@@ -649,6 +688,9 @@ function movethedisc(srcntarget)
 	}
 }
 
+
+//  -----  draw the disks after they are pushed to array
+
 function drawdiscs()
 {
 	srctrgt = [];
@@ -676,6 +718,8 @@ function drawdiscs()
 	}
 }
 
+
+// ----- function to calculate and set the co-ordinates of disks depending upon the placement of bars
 function renderframe(elem,target)
 {
 	console.log("elem-------------"+JSON.stringify(elem)+"target---------------------"+target);
@@ -683,10 +727,10 @@ function renderframe(elem,target)
 	{
 		/* -------------- for bar1 ----------------*/
 
-		if(target[1] == 1 && elem.disknum == 1)
+		if(target[1] == 1 && elem.disknum == 1)  // check target and disk, disknum used to determine, here disk is green
 		{
-			elem.x = c.width/4-110;
-			elem.y = base - (10*(bar1.length));
+			elem.x = c.width/4-110;                    // calculate width
+			elem.y = base - (10*(bar1.length));			// calculate base depending upon the disks in tower, which it is about to rest
 		}
 		else if(target[1] == 1 && elem.disknum == 2)
 		{
