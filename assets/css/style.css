@@ -162,6 +162,11 @@ body {
   margin-top: 3rem !important;
 }
 
+.mb-5,
+.my-5 {
+  margin-bottom: 3rem !important;
+}
+
 .btn {
   display: inline-block;
   font-weight: 400;
