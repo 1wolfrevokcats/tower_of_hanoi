@@ -9,14 +9,28 @@
 
 </head>
 <body>
-	<!-- <button onclick="drawlayout()">Reset</button> -->
-	<div class="movclass">Moves : <span id="move">0</span></div>
-	<div class="resetdiv"><button class="reset" onclick="reset()">Reset game</button></div>
 
-	<!-- ------------- canvas element to render/paint animation------------------ -->
-<canvas height="500" width="700" id="canvo" style="border:1px solid #000000;" oncontextmenu="return false">
-	Your browser does  not support canvas !!!!
-</canvas>
+	<div class="container">
+		<div class="w-50 mx-auto mt-5">
+			<div class="d-flex align-items-center justify-content-between">
+				<div class="movclass">Moves : <span id="move">0</span></div>
+				<div class="resetdiv">
+					<button class="reset btn btn-sm" onclick="reset()">Reset game</button>
+				</div>
+			</div>
+
+			<!-- ------------- canvas element to render/paint animation------------------ -->
+			<canvas height="500" width="700" id="canvo" style="border:1px solid #000000;" oncontextmenu="return false">
+				Your browser does  not support canvas !!!!
+			</canvas>
+		</div>
+
+	</div>
+	<!-- <button onclick="drawlayout()">Reset</button> -->
+	
+	
+
+	
 
 <!------------------------------ start screen --------------------->
 <div id="myModal" class="modal">
