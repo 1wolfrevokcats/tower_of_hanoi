@@ -4,14 +4,32 @@
 <head>
 	<title>Tower of Hanoi</title>
 	<style>
+		html * {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
 		.custBtn {
+			background: transparent;
+			/* color: #ffffff; */
+			border: 0px;
+			/* border-radius: 20px; */
+			/* box-shadow: 0 1px 5px rgb(0, 0, 0); */
+			cursor: pointer;
+			height: 40px;
+			text-transform: capitalize;
+		}
+
+		.resetBtn {
 			background: #12ac12;
 			color: #ffffff;
 			border: 0px;
 			border-radius: 20px;
 			box-shadow: 0 1px 5px rgb(0, 0, 0);
 			cursor: pointer;
+			height: 40px;
+			text-transform: capitalize;
 		}
+
 
 		body {
 			overflow: hidden;
@@ -47,7 +65,7 @@
 			height: 100%;
 			overflow: auto;
 			background-color: rgb(0, 0, 0);
-			background-color: rgba(0, 0, 0, 0.4);
+			background-color: rgba(0, 0, 0, 0.6);
 			-webkit-animation-name: fadeIn;
 			-webkit-animation-duration: 0.4s;
 			-moz-animation-name: fadeIn;
@@ -101,7 +119,10 @@
 		}
 
 		.modal-body {
-			padding: 2px 16px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
 		}
 
 
@@ -156,13 +177,43 @@
 			top: 5px;
 			left: 400px;
 		}
+
+		/* glowing css */
+		.glow {
+			font-size: 80px;
+			color: #fff;
+			text-align: center;
+			-webkit-animation: glow 1s ease-in-out infinite alternate;
+			-moz-animation: glow 1s ease-in-out infinite alternate;
+			animation: glow 1s ease-in-out infinite alternate;
+		}
+
+		@keyframes glow {
+			from {
+				text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+			}
+
+			to {
+				text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+			}
+		}
+
+		@-webkit-keyframes glow {
+			from {
+				text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+			}
+
+			to {
+				text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+			}
+		}
 	</style>
 
 </head>
 
 <body>
 	<div class="movclass">Moves : <span id="move">0</span></div>
-	<div class="resetdiv"><button class="reset custBtn" onclick="reset()">Reset game</button></div>
+	<div class="resetdiv"><button class="resetBtn" onclick="reset()">Reset game</button></div>
 
 	<!-- ------------- canvas element to render/paint animation------------------ -->
 	<canvas height="500" width="700" id="canvo" style="border:1px solid #000000;" oncontextmenu="return false">
@@ -175,16 +226,19 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<!-- <span class="close">&times;</span> -->
-				<h2>Tower of Hanoi</h2>
+				<h1><strong>Tower of Hanoi</strong></h1>
 			</div>
 			<div class="modal-body">
-				<h3>Instructions</h3>
-				<ul style="list-style-type:disc">
-					<li>Use left mouse click to select source tower and right mouse click to select target tower.</li>
-					<li>Stack discs on the middle tower.</li>
-					<li>Only a smaller disc can rest on a bigger disc.</li>
-				</ul>
-				<button id="close" class="custBtn">Start game</button>
+				<h1>Instructions</h1>
+				<h3>
+					<ul style="list-style-type:disc">
+						<li>Use left mouse click to select source tower and right mouse click to select target tower.
+						</li>
+						<li>Stack discs on the middle tower.</li>
+						<li>Only a smaller disc can rest on a bigger disc.</li>
+					</ul>
+				</h3>
+				<button id="close" class="custBtn glow">Start game</button>
 			</div>
 		</div>
 	</div>
