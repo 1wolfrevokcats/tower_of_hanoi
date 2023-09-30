@@ -489,47 +489,55 @@ function drawDiscs() {
 // ----- function to calculate and set the co-ordinates of disks depending upon the placement of bars
 
 function renderFrame(elem, target) {
-  if (target.length !== 0 && elem.length !== 0) {
-    /* -------------- for firstTower ----------------*/
-    if (target[1] === 1 && elem.diskId === 1) {
-      // check target and disk, diskId used to determine, here disk is green
-      elem.x = c.width / 4 - 110; // calculate width
-      elem.y = base - 10 * firstTower.length; // calculate base depending upon the disks in tower, which it is about to rest
-    } else if (target[1] === 1 && elem.diskId === 2) {
-      elem.x = c.width / 4 - 100;
-      elem.y = base - 10 * firstTower.length;
-    } else if (target[1] === 1 && elem.diskId === 3) {
-      elem.x = c.width / 4 - 90;
-      elem.y = base - 10 * firstTower.length;
-    } else if (target[1] === 1 && elem.diskId === 4) {
-      elem.x = c.width / 4 - 80;
-      elem.y = base - 10 * firstTower.length;
-    } else if (target[1] === 2 && elem.diskId === 1) {
+  let targetElement = target[1];
+  const { diskId } = elem;
+  if (targetElement && elem) {
+    if (targetElement === 1) {
+      /* -------------- for firstTower ----------------*/
+      if (diskId === 1) {
+        elem.x = c.width / 4 - 110; // calculate width
+        elem.y = base - 10 * firstTower.length; // calculate base depending upon the disks in tower, which it is about to rest
+      } else if (diskId === 2) {
+        elem.x = c.width / 4 - 100;
+        elem.y = base - 10 * firstTower.length;
+      } else if (diskId === 3) {
+        elem.x = c.width / 4 - 90;
+        elem.y = base - 10 * firstTower.length;
+      } else {
+        elem.x = c.width / 4 - 80;
+        elem.y = base - 10 * firstTower.length;
+      }
+    }
+    if (targetElement === 2) {
       /* -------------- for secondTower ----------------*/
-      elem.x = c.width / 2 - 85;
-      elem.y = base - 10 * secondTower.length;
-    } else if (target[1] === 2 && elem.diskId === 2) {
-      elem.x = c.width / 2 - 75;
-      elem.y = base - 10 * secondTower.length;
-    } else if (target[1] === 2 && elem.diskId === 3) {
-      elem.x = c.width / 2 - 65;
-      elem.y = base - 10 * secondTower.length;
-    } else if (target[1] === 2 && elem.diskId === 4) {
-      elem.x = c.width / 2 - 55;
-      elem.y = base - 10 * secondTower.length;
-    } else if (target[1] === 3 && elem.diskId === 1) {
+      if (diskId === 1) {
+        elem.x = c.width / 2 - 85;
+        elem.y = base - 10 * secondTower.length;
+      } else if (diskId === 2) {
+        elem.x = c.width / 2 - 75;
+        elem.y = base - 10 * secondTower.length;
+      } else if (diskId === 3) {
+        elem.x = c.width / 2 - 65;
+        elem.y = base - 10 * secondTower.length;
+      } else {
+        elem.x = c.width / 2 - 55;
+        elem.y = base - 10 * secondTower.length;
+      }
+    } else {
       /* -------------- for thirdTower ----------------*/
-      elem.x = c.width / 2 + 115;
-      elem.y = base - 10 * thirdTower.length;
-    } else if (target[1] === 3 && elem.diskId === 2) {
-      elem.x = c.width / 2 + 125;
-      elem.y = base - 10 * thirdTower.length;
-    } else if (target[1] === 3 && elem.diskId === 3) {
-      elem.x = c.width / 2 + 135;
-      elem.y = base - 10 * thirdTower.length;
-    } else if (target[1] === 3 && elem.diskId === 4) {
-      elem.x = c.width / 2 + 145;
-      elem.y = base - 10 * thirdTower.length;
+      if (diskId === 1) {
+        elem.x = c.width / 2 + 115;
+        elem.y = base - 10 * thirdTower.length;
+      } else if (diskId === 2) {
+        elem.x = c.width / 2 + 125;
+        elem.y = base - 10 * thirdTower.length;
+      } else if (diskId === 3) {
+        elem.x = c.width / 2 + 135;
+        elem.y = base - 10 * thirdTower.length;
+      } else {
+        elem.x = c.width / 2 + 145;
+        elem.y = base - 10 * thirdTower.length;
+      }
     }
     drawTowers();
     drawDiscs();
