@@ -5,9 +5,9 @@ let msg;
 let base = 280; // define disk base ..
 const DISC_HEIGHT = 10; // define disk height
 const DISC_WIDTH = 80; // define disk width
-let bar1 = []; //used to store disks
-let bar2 = [];
-let bar3 = [];
+let firstTower = []; //used to store disks
+let secondTower = [];
+let thirdTower = [];
 let destinationTower = [2]; // array of length 2 used to store , mouse bar selected and targeted bar
 let popElement; // element that will be popped and pushed
 const DISC_COUNT = 4; // number of disks, defined static
@@ -23,7 +23,7 @@ let tryAgain = document.getElementById("try");
 
 /*  ----------- describing disks , drawDisc function is written in the variable  ---------*/
 
-let disc1 = {
+let firstDisc = {
   x: c.width / 4 - 110,
   y: base - 10,
   width: DISC_WIDTH,
@@ -37,7 +37,7 @@ let disc1 = {
   },
 };
 
-let disc2 = {
+let secondDisc = {
   x: c.width / 4 - 100,
   y: base - 20,
   width: DISC_WIDTH - 20,
@@ -51,7 +51,7 @@ let disc2 = {
   },
 };
 
-let disc3 = {
+let thirdDisc = {
   x: c.width / 4 - 90,
   y: base - 30,
   width: DISC_WIDTH - 40,
@@ -65,7 +65,7 @@ let disc3 = {
   },
 };
 
-let disc4 = {
+let fourthDisc = {
   x: c.width / 4 - 80,
   y: base - 40,
   width: DISC_WIDTH - 60,
@@ -99,7 +99,7 @@ endScreen.style.display = "none";
 
 function drawTowers() {
   ctx.clearRect(0, 0, c.width, c.height);
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "brown";
 
   ctx.beginPath();
   ctx.rect(100, 180, 10, 100); //vertical bar
@@ -129,30 +129,30 @@ tryAgain.onclick = function () {
 
 /*  ------------------ for drawing disks, default they rest on first bar
 
-bar 1,2,3 represents the black bars. used to push and pop disks
+bar 1,2,3 represents the towers and are used to push and pop disks
  ---------------*/
 function drawLayout() {
   drawTowers();
-  bar1 = [];
-  bar2 = [];
-  bar3 = [];
+  firstTower = [];
+  secondTower = [];
+  thirdTower = [];
 
-  disc1.x = c.width / 4 - 110;
-  disc1.y = base - 10;
+  firstDisc.x = c.width / 4 - 110;
+  firstDisc.y = base - 10;
 
-  disc2.x = c.width / 4 - 100;
-  disc2.y = base - 20;
+  secondDisc.x = c.width / 4 - 100;
+  secondDisc.y = base - 20;
 
-  disc3.x = c.width / 4 - 90;
-  disc3.y = base - 30;
+  thirdDisc.x = c.width / 4 - 90;
+  thirdDisc.y = base - 30;
 
-  disc4.x = c.width / 4 - 80;
-  disc4.y = base - 40;
+  fourthDisc.x = c.width / 4 - 80;
+  fourthDisc.y = base - 40;
 
-  bar1 = [disc1, disc2, disc3, disc4];
+  firstTower = [firstDisc, secondDisc, thirdDisc, fourthDisc];
 
-  for (let i = 0; i < bar1.length; i++) {
-    bar1[i].drawDisc();
+  for (let i = 0; i < firstTower.length; i++) {
+    firstTower[i].drawDisc();
   }
 }
 
@@ -171,9 +171,9 @@ function getTarget(evt) {
     evt.clientY <= 360
   ) {
     // -------- evt.button gives mouse button (click, left right , middle) etc ----------------------------
-    if (evt.button == 0) {
+    if (evt.button === 0) {
       destinationTower[0] = 1;
-    } else if (evt.button == 2) {
+    } else if (evt.button === 2) {
       destinationTower[1] = 1;
       moveDiscTo(destinationTower);
     }
@@ -185,9 +185,9 @@ function getTarget(evt) {
     evt.clientY >= 260 &&
     evt.clientY <= 360
   ) {
-    if (evt.button == 0) {
+    if (evt.button === 0) {
       destinationTower[0] = 2;
-    } else if (evt.button == 2) {
+    } else if (evt.button === 2) {
       destinationTower[1] = 2;
       moveDiscTo(destinationTower);
     }
@@ -199,9 +199,9 @@ function getTarget(evt) {
     evt.clientY >= 260 &&
     evt.clientY <= 360
   ) {
-    if (evt.button == 0) {
+    if (evt.button === 0) {
       destinationTower[0] = 3;
-    } else if (evt.button == 2) {
+    } else if (evt.button === 2) {
       destinationTower[1] = 3;
       moveDiscTo(destinationTower);
     }
@@ -213,9 +213,9 @@ function checkGame(noOfMoves) {
   let minMoves = Math.pow(2, DISC_COUNT) - 1;
   let color;
 
-  if (bar2.length == DISC_COUNT) {
+  if (secondTower.length === DISC_COUNT) {
     score = 100 * (minMoves / noOfMoves);
-    if (score == 100) {
+    if (score === 100) {
       msg =
         "Excellent!!! <p>You have completed the game in minimum possible moves</p>";
       color = "green";
@@ -249,203 +249,222 @@ function reset() {
   document.getElementById("move").innerHTML = moves;
 }
 
+function gameAlert() {
+  document.getElementById("gameAlert").innerHTML =
+    "Cannot place large disk on smaller one";
+  setTimeout(function () {
+    document.getElementById("gameAlert").innerHTML = "";
+  }, 3500);
+}
+
 // ----------- pushes and pops disks and repaints animation
 function moveDiscTo(sourceAndTarget) {
   if (
-    (sourceAndTarget[0] != null || sourceAndTarget[0] != undefined) &&
-    (sourceAndTarget[1] != null || sourceAndTarget[1] != undefined)
+    (sourceAndTarget[0] !== null || sourceAndTarget[0] !== undefined) &&
+    (sourceAndTarget[1] !== null || sourceAndTarget[1] !== undefined)
   ) {
-    //popElement = bar[0].pop();
     if (sourceAndTarget[0] === sourceAndTarget[1]) {
       event.preventDefault();
     } else {
-      // --------------------------- for bar1 ------------------------------------
-      if (sourceAndTarget[0] == 1) {
-        // source is bar1
-        // target is bar1
-        if (sourceAndTarget[1] == 1) {
-          //if source and target is bar1
+      // --------------------------- for firstTower ------------------------------------
+      if (sourceAndTarget[0] === 1) {
+        // source is firstTower
+        // target is firstTower
+        if (sourceAndTarget[1] === 1) {
+          //if source and target is firstTower
           event.preventDefault();
-        } else if (sourceAndTarget[1] == 2) {
-          //if source is bar 1 and target is bar2
-          if (bar1.length == 0) {
+        } else if (sourceAndTarget[1] === 2) {
+          //if source is bar 1 and target is secondTower
+          if (firstTower.length === 0) {
             event.preventDefault();
           } else {
-            if (bar2.length == 0) {
-              popElement = bar1.pop();
-              bar2.push(popElement);
+            if (secondTower.length === 0) {
+              popElement = firstTower.pop();
+              secondTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else if (
-              bar2[bar2.length - 1].diskId < bar1[bar1.length - 1].diskId
+              secondTower[secondTower.length - 1].diskId <
+              firstTower[firstTower.length - 1].diskId
             ) {
-              popElement = bar1.pop();
-              bar2.push(popElement);
+              popElement = firstTower.pop();
+              secondTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else {
+              gameAlert();
               event.preventDefault();
             }
           }
-        } else if (sourceAndTarget[1] == 3) {
-          //if source is bar 1 and target is bar3
-          if (bar1.length == 0) {
+        } else if (sourceAndTarget[1] === 3) {
+          //if source is bar 1 and target is thirdTower
+          if (firstTower.length === 0) {
             event.preventDefault();
           } else {
-            if (bar3.length == 0) {
-              popElement = bar1.pop();
-              bar3.push(popElement);
+            if (thirdTower.length === 0) {
+              popElement = firstTower.pop();
+              thirdTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else if (
-              bar3[bar3.length - 1].diskId < bar1[bar1.length - 1].diskId
+              thirdTower[thirdTower.length - 1].diskId <
+              firstTower[firstTower.length - 1].diskId
             ) {
-              popElement = bar1.pop();
-              bar3.push(popElement);
+              popElement = firstTower.pop();
+              thirdTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else {
+              gameAlert();
               event.preventDefault();
             }
           }
         }
       }
 
-      // --------------------------- for bar2 ------------------------------------
+      // --------------------------- for secondTower ------------------------------------
 
-      // if source is bar2
-      else if (sourceAndTarget[0] == 2) {
-        if (sourceAndTarget[1] == 1) {
-          //if source is bar 2 and target is bar1
-          if (bar2.length == 0) {
+      // if source is secondTower
+      else if (sourceAndTarget[0] === 2) {
+        if (sourceAndTarget[1] === 1) {
+          //if source is bar 2 and target is firstTower
+          if (secondTower.length === 0) {
             event.preventDefault();
           } else {
-            if (bar1.length == 0) {
-              popElement = bar2.pop();
-              bar1.push(popElement);
+            if (firstTower.length === 0) {
+              popElement = secondTower.pop();
+              firstTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else if (
-              bar1[bar1.length - 1].diskId < bar2[bar2.length - 1].diskId
+              firstTower[firstTower.length - 1].diskId <
+              secondTower[secondTower.length - 1].diskId
             ) {
-              popElement = bar2.pop();
-              bar1.push(popElement);
+              popElement = secondTower.pop();
+              firstTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else {
+              gameAlert();
               event.preventDefault();
             }
           }
-        } else if (sourceAndTarget[1] == 2) {
-          // if source and target is bar2
+        } else if (sourceAndTarget[1] === 2) {
+          // if source and target is secondTower
           event.preventDefault();
-        } else if (sourceAndTarget[1] == 3) {
-          //if source is bar 2 and target is bar3
-          if (bar2.length == 0) {
+        } else if (sourceAndTarget[1] === 3) {
+          //if source is bar 2 and target is thirdTower
+          if (secondTower.length === 0) {
             event.preventDefault();
           } else {
-            if (bar3.length == 0) {
-              popElement = bar2.pop();
-              bar3.push(popElement);
+            if (thirdTower.length === 0) {
+              popElement = secondTower.pop();
+              thirdTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else if (
-              bar3[bar3.length - 1].diskId < bar2[bar2.length - 1].diskId
+              thirdTower[thirdTower.length - 1].diskId <
+              secondTower[secondTower.length - 1].diskId
             ) {
-              popElement = bar2.pop();
-              bar3.push(popElement);
+              popElement = secondTower.pop();
+              thirdTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else {
+              gameAlert();
               event.preventDefault();
             }
           }
         }
       }
 
-      // --------------------------- for bar3 ------------------------------------
-      //if source is bar3
-      else if (sourceAndTarget[0] == 3) {
-        if (sourceAndTarget[1] == 1) {
-          //if source is bar3 and target is bar1
-          if (bar3.length == 0) {
+      // --------------------------- for thirdTower ------------------------------------
+      //if source is thirdTower
+      else if (sourceAndTarget[0] === 3) {
+        if (sourceAndTarget[1] === 1) {
+          //if source is thirdTower and target is firstTower
+          if (thirdTower.length === 0) {
             event.preventDefault();
           } else {
-            if (bar1.length == 0) {
-              popElement = bar3.pop();
-              bar1.push(popElement);
+            if (firstTower.length === 0) {
+              popElement = thirdTower.pop();
+              firstTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else if (
-              bar1[bar1.length - 1].diskId < bar3[bar3.length - 1].diskId
+              firstTower[firstTower.length - 1].diskId <
+              thirdTower[thirdTower.length - 1].diskId
             ) {
-              popElement = bar3.pop();
-              bar1.push(popElement);
+              popElement = thirdTower.pop();
+              firstTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else {
+              gameAlert();
               event.preventDefault();
             }
           }
-        } else if (sourceAndTarget[1] == 2) {
-          //if source is bar3 and target is bar2
-          if (bar3.length == 0) {
+        } else if (sourceAndTarget[1] === 2) {
+          //if source is thirdTower and target is secondTower
+          if (thirdTower.length === 0) {
             event.preventDefault();
           } else {
-            if (bar2.length == 0) {
-              popElement = bar3.pop();
-              bar2.push(popElement);
+            if (secondTower.length === 0) {
+              popElement = thirdTower.pop();
+              secondTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else if (
-              bar2[bar2.length - 1].diskId < bar3[bar3.length - 1].diskId
+              secondTower[secondTower.length - 1].diskId <
+              thirdTower[thirdTower.length - 1].diskId
             ) {
-              popElement = bar3.pop();
-              bar2.push(popElement);
+              popElement = thirdTower.pop();
+              secondTower.push(popElement);
               moves = moves + 1;
               ctx.clearRect(0, 0, c.width, c.height);
               renderFrame(popElement, sourceAndTarget);
               document.getElementById("move").innerHTML = moves;
               checkGame(moves);
             } else {
+              gameAlert();
               event.preventDefault();
             }
           }
-        } else if (sourceAndTarget[1] == 3) {
-          //if source and target is bar3
+        } else if (sourceAndTarget[1] === 3) {
+          //if source and target is thirdTower
           event.preventDefault();
         }
       }
@@ -460,67 +479,57 @@ function moveDiscTo(sourceAndTarget) {
 function drawDiscs() {
   destinationTower = [];
 
-  if (bar1.length != 0) {
-    for (let i = 0; i < bar1.length; i++) {
-      bar1[i].drawDisc();
-    }
-  }
-  if (bar2.length != 0) {
-    for (let i = 0; i < bar2.length; i++) {
-      bar2[i].drawDisc();
-    }
-  }
-  if (bar3.length != 0) {
-    for (let i = 0; i < bar3.length; i++) {
-      bar3[i].drawDisc();
-    }
-  }
+  firstTower.map((tower) => tower.drawDisc());
+
+  secondTower.map((tower) => tower.drawDisc());
+
+  thirdTower.map((tower) => tower.drawDisc());
 }
 
 // ----- function to calculate and set the co-ordinates of disks depending upon the placement of bars
 
 function renderFrame(elem, target) {
-  if (target.length != 0 && elem.length != 0) {
-    /* -------------- for bar1 ----------------*/
-    if (target[1] == 1 && elem.diskId == 1) {
+  if (target.length !== 0 && elem.length !== 0) {
+    /* -------------- for firstTower ----------------*/
+    if (target[1] === 1 && elem.diskId === 1) {
       // check target and disk, diskId used to determine, here disk is green
       elem.x = c.width / 4 - 110; // calculate width
-      elem.y = base - 10 * bar1.length; // calculate base depending upon the disks in tower, which it is about to rest
-    } else if (target[1] == 1 && elem.diskId == 2) {
+      elem.y = base - 10 * firstTower.length; // calculate base depending upon the disks in tower, which it is about to rest
+    } else if (target[1] === 1 && elem.diskId === 2) {
       elem.x = c.width / 4 - 100;
-      elem.y = base - 10 * bar1.length;
-    } else if (target[1] == 1 && elem.diskId == 3) {
+      elem.y = base - 10 * firstTower.length;
+    } else if (target[1] === 1 && elem.diskId === 3) {
       elem.x = c.width / 4 - 90;
-      elem.y = base - 10 * bar1.length;
-    } else if (target[1] == 1 && elem.diskId == 4) {
+      elem.y = base - 10 * firstTower.length;
+    } else if (target[1] === 1 && elem.diskId === 4) {
       elem.x = c.width / 4 - 80;
-      elem.y = base - 10 * bar1.length;
-    } else if (target[1] == 2 && elem.diskId == 1) {
-      /* -------------- for bar2 ----------------*/
+      elem.y = base - 10 * firstTower.length;
+    } else if (target[1] === 2 && elem.diskId === 1) {
+      /* -------------- for secondTower ----------------*/
       elem.x = c.width / 2 - 85;
-      elem.y = base - 10 * bar2.length;
-    } else if (target[1] == 2 && elem.diskId == 2) {
+      elem.y = base - 10 * secondTower.length;
+    } else if (target[1] === 2 && elem.diskId === 2) {
       elem.x = c.width / 2 - 75;
-      elem.y = base - 10 * bar2.length;
-    } else if (target[1] == 2 && elem.diskId == 3) {
+      elem.y = base - 10 * secondTower.length;
+    } else if (target[1] === 2 && elem.diskId === 3) {
       elem.x = c.width / 2 - 65;
-      elem.y = base - 10 * bar2.length;
-    } else if (target[1] == 2 && elem.diskId == 4) {
+      elem.y = base - 10 * secondTower.length;
+    } else if (target[1] === 2 && elem.diskId === 4) {
       elem.x = c.width / 2 - 55;
-      elem.y = base - 10 * bar2.length;
-    } else if (target[1] == 3 && elem.diskId == 1) {
-      /* -------------- for bar3 ----------------*/
+      elem.y = base - 10 * secondTower.length;
+    } else if (target[1] === 3 && elem.diskId === 1) {
+      /* -------------- for thirdTower ----------------*/
       elem.x = c.width / 2 + 115;
-      elem.y = base - 10 * bar3.length;
-    } else if (target[1] == 3 && elem.diskId == 2) {
+      elem.y = base - 10 * thirdTower.length;
+    } else if (target[1] === 3 && elem.diskId === 2) {
       elem.x = c.width / 2 + 125;
-      elem.y = base - 10 * bar3.length;
-    } else if (target[1] == 3 && elem.diskId == 3) {
+      elem.y = base - 10 * thirdTower.length;
+    } else if (target[1] === 3 && elem.diskId === 3) {
       elem.x = c.width / 2 + 135;
-      elem.y = base - 10 * bar3.length;
-    } else if (target[1] == 3 && elem.diskId == 4) {
+      elem.y = base - 10 * thirdTower.length;
+    } else if (target[1] === 3 && elem.diskId === 4) {
       elem.x = c.width / 2 + 145;
-      elem.y = base - 10 * bar3.length;
+      elem.y = base - 10 * thirdTower.length;
     }
     drawTowers();
     drawDiscs();

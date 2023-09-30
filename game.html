@@ -1,62 +1,71 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Tower of Hanoi</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
 
-<head>
-	<title>Tower of Hanoi</title>
-	<link rel="stylesheet" href="./styles.css">
-</head>
+  <body>
+    <div class="topMenu">
+      <div class="movclass">Moves : <span id="move">0</span></div>
+      <div class="resetdiv">
+        <button class="resetBtn" onclick="reset()">Reset game</button>
+      </div>
+    </div>
+    <!-- ------------- canvas element to render/paint animation------------------ -->
+    <canvas
+      height="500"
+      width="700"
+      id="canvo"
+      style="border: 1px solid #000000"
+      oncontextmenu="return false"
+    >
+      Your browser does not support canvas !!!!
+    </canvas>
 
-<body>
-	<div class="movclass">Moves : <span id="move">0</span></div>
-	<div class="resetdiv"><button class="resetBtn" onclick="reset()">Reset game</button></div>
+	<div id="gameAlert"></div>
 
-	<!-- ------------- canvas element to render/paint animation------------------ -->
-	<canvas height="500" width="700" id="canvo" style="border:1px solid #000000;" oncontextmenu="return false">
-		Your browser does not support canvas !!!!
-	</canvas>
+    <!------------------------------ start screen --------------------->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1><strong>Tower of Hanoi</strong></h1>
+        </div>
+        <div class="modal-body">
+          <h2>Instructions</h2>
+          <h3>
+            <ul style="list-style-type: disc">
+              <li>
+                Use left mouse click to select source tower and right mouse
+                click to select target tower.
+              </li>
+              <li>The goal is to stack discs on the middle tower.</li>
+              <li>Only smaller disc can rest on a bigger disc.</li>
+            </ul>
+          </h3>
+          <button id="close" class="custBtn glow">Start game</button>
+        </div>
+      </div>
+    </div>
 
-	<!------------------------------ start screen --------------------->
-	<div id="myModal" class="modal">
-		<!-- Modal content -->
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1><strong>Tower of Hanoi</strong></h1>
-			</div>
-			<div class="modal-body">
-				<h2>Instructions</h2>
-				<h3>
-					<ul style="list-style-type:disc">
-						<li>Use left mouse click to select source tower and right mouse click to select target tower.
-						</li>
-						<li>The goal is to stack discs on the middle tower.</li>
-						<li>Only smaller disc can rest on a bigger disc.</li>
-					</ul>
-				</h3>
-				<button id="close" class="custBtn glow">Start game</button>
-			</div>
-		</div>
-	</div>
+    <!------------------------------ close screen --------------------->
 
+    <div id="myModal1" class="modal1">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Tower of Hanoi</h2>
+        </div>
+        <div class="modal-body">
+          <div id="msg"></div>
+          <div id="endScore"></div>
+          <div id="endMoves"></div>
+          <button id="try" class="custBtn">Play again</button>
+        </div>
+      </div>
+    </div>
 
-	<!------------------------------ close screen --------------------->
-
-	<div id="myModal1" class="modal1">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2>Tower of Hanoi</h2>
-			</div>
-			<div class="modal-body">
-				<div id="msg"></div>
-				<div id="endScore"></div>
-				<div id="endMoves"></div>
-				<button id="try" class="custBtn">Play again</button>
-			</div>
-		</div>
-	</div>
-
-	<!------------------------------ close screen ------------------- -->
-
-</body>
-<script src="game.js" defer></script>
-
+    <!------------------------------ close screen ------------------- -->
+  </body>
+  <script src="game.js" defer></script>
 </html>
