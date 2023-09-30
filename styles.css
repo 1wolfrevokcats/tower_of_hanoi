@@ -1,9 +1,6 @@
 .custBtn {
   background: transparent;
-  /* color: #ffffff; */
   border: 0px;
-  /* border-radius: 20px; */
-  /* box-shadow: 0 1px 5px rgb(0, 0, 0); */
   cursor: pointer;
   height: 40px;
   text-transform: capitalize;
@@ -16,8 +13,8 @@
   border-radius: 20px;
   box-shadow: 0 1px 5px rgb(0, 0, 0);
   cursor: pointer;
-  height: 30px;
   text-transform: capitalize;
+  padding: 10px;
 }
 
 body {

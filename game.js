@@ -214,7 +214,7 @@ function checkGame(noOfMoves) {
   let color;
 
   if (secondTower.length === DISC_COUNT) {
-    score = 100 * (minMoves / noOfMoves);
+    score = Math.round(100 * (minMoves / noOfMoves));
     if (score === 100) {
       msg =
         "Excellent!!! <p>You have completed the game in minimum possible moves</p>";
@@ -231,8 +231,9 @@ function checkGame(noOfMoves) {
     }
 
     endScreen.style.display = "block";
-    document.getElementById("msg").innerHTML = msg;
-    document.getElementById("msg").style.color = color;
+    let msgElement = document.getElementById("msg");
+    msgElement.innerHTML = msg;
+    msgElement.style.color = color;
     document.getElementById("endScore").innerHTML =
       "Your efficiency is " + score;
     document.getElementById("endMoves").innerHTML = "Moves taken " + noOfMoves;
@@ -489,55 +490,43 @@ function drawDiscs() {
 // ----- function to calculate and set the co-ordinates of disks depending upon the placement of bars
 
 function renderFrame(elem, target) {
-  let targetElement = target[1];
+  let [, targetElement] = target;
   const { diskId } = elem;
   if (targetElement && elem) {
     if (targetElement === 1) {
       /* -------------- for firstTower ----------------*/
-      if (diskId === 1) {
-        elem.x = c.width / 4 - 110; // calculate width
-        elem.y = base - 10 * firstTower.length; // calculate base depending upon the disks in tower, which it is about to rest
-      } else if (diskId === 2) {
-        elem.x = c.width / 4 - 100;
-        elem.y = base - 10 * firstTower.length;
-      } else if (diskId === 3) {
-        elem.x = c.width / 4 - 90;
-        elem.y = base - 10 * firstTower.length;
-      } else {
-        elem.x = c.width / 4 - 80;
-        elem.y = base - 10 * firstTower.length;
-      }
+      const calcObj = {
+        1: -110,
+        2: -100,
+        3: -90,
+        4: -80,
+      };
+
+      elem.y = base - 10 * firstTower.length; // calculate base depending upon the disks in tower, which it is about to rest
+      elem.x = c.width / 4 + calcObj[diskId];
     }
     if (targetElement === 2) {
       /* -------------- for secondTower ----------------*/
-      if (diskId === 1) {
-        elem.x = c.width / 2 - 85;
-        elem.y = base - 10 * secondTower.length;
-      } else if (diskId === 2) {
-        elem.x = c.width / 2 - 75;
-        elem.y = base - 10 * secondTower.length;
-      } else if (diskId === 3) {
-        elem.x = c.width / 2 - 65;
-        elem.y = base - 10 * secondTower.length;
-      } else {
-        elem.x = c.width / 2 - 55;
-        elem.y = base - 10 * secondTower.length;
-      }
-    } else {
+      const calcObj = {
+        1: -85,
+        2: -75,
+        3: -65,
+        4: -55,
+      };
+
+      elem.y = base - 10 * secondTower.length;
+      elem.x = c.width / 2 + calcObj[diskId];
+    } else if (targetElement === 3) {
       /* -------------- for thirdTower ----------------*/
-      if (diskId === 1) {
-        elem.x = c.width / 2 + 115;
-        elem.y = base - 10 * thirdTower.length;
-      } else if (diskId === 2) {
-        elem.x = c.width / 2 + 125;
-        elem.y = base - 10 * thirdTower.length;
-      } else if (diskId === 3) {
-        elem.x = c.width / 2 + 135;
-        elem.y = base - 10 * thirdTower.length;
-      } else {
-        elem.x = c.width / 2 + 145;
-        elem.y = base - 10 * thirdTower.length;
-      }
+      const calcObj = {
+        1: 115,
+        2: 125,
+        3: 135,
+        4: 145,
+      };
+
+      elem.y = base - 10 * thirdTower.length;
+      elem.x = c.width / 2 + calcObj[diskId];
     }
     drawTowers();
     drawDiscs();
