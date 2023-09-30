@@ -1,7 +1,7 @@
 # [Jira Id](https://amigohola.atlassian.net/browse/{Jira_id})
 
 # Description
-Please provide description and/or screen shot of whar PR does.
+Please provide description and/or screen shot of what PR does.
 
 # Checklist
 
