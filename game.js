@@ -160,50 +160,31 @@ function drawLayout() {
 
 function animateDisc(elem, target) {}
 
+function moveDiskHelper(tower, button) {
+  if (button === 0) {
+    destinationTower[0] = tower;
+  } else if (button === 2) {
+    destinationTower[1] = tower;
+    moveDiscTo(destinationTower);
+  }
+}
+
 /* --------------- function to check if the mouse is clicked on the bar only -------------------*/
 
 function getTarget(evt) {
-  // -------- if clicked on first bar ----------------------------
-  if (
-    evt.clientX >= 400 &&
-    evt.clientX <= 410 &&
-    evt.clientY >= 260 &&
-    evt.clientY <= 360
-  ) {
-    // -------- evt.button gives mouse button (click, left right , middle) etc ----------------------------
-    if (evt.button === 0) {
-      destinationTower[0] = 1;
-    } else if (evt.button === 2) {
-      destinationTower[1] = 1;
-      moveDiscTo(destinationTower);
+  const { clientX, clientY, button } = evt;
+  if (clientY >= 260 && clientY <= 360) {
+    // -------- if clicked on first bar ----------------------------
+    if (clientX >= 400 && clientX <= 410) {
+      moveDiskHelper(1, button);
     }
-  }
-  // -------- if clicked on first bar ----------------------------
-  else if (
-    evt.clientX >= 600 &&
-    evt.clientX <= 610 &&
-    evt.clientY >= 260 &&
-    evt.clientY <= 360
-  ) {
-    if (evt.button === 0) {
-      destinationTower[0] = 2;
-    } else if (evt.button === 2) {
-      destinationTower[1] = 2;
-      moveDiscTo(destinationTower);
+    // -------- if clicked on second bar ----------------------------
+    else if (clientX >= 600 && clientX <= 610) {
+      moveDiskHelper(2, button);
     }
-  }
-  // -------- if clicked on first bar ----------------------------
-  else if (
-    evt.clientX >= 800 &&
-    evt.clientX <= 810 &&
-    evt.clientY >= 260 &&
-    evt.clientY <= 360
-  ) {
-    if (evt.button === 0) {
-      destinationTower[0] = 3;
-    } else if (evt.button === 2) {
-      destinationTower[1] = 3;
-      moveDiscTo(destinationTower);
+    // -------- if clicked on third bar ----------------------------
+    else if (clientX >= 800 && clientX <= 810) {
+      moveDiskHelper(3, button);
     }
   }
 }
@@ -269,8 +250,7 @@ function moveDiscTo(sourceAndTarget) {
     } else {
       // --------------------------- for firstTower ------------------------------------
       if (sourceAndTarget[0] === 1) {
-        // source is firstTower
-        // target is firstTower
+        // source and target is firstTower
         if (sourceAndTarget[1] === 1) {
           //if source and target is firstTower
           event.preventDefault();
