@@ -21,7 +21,14 @@ let close = document.getElementById("close");
 
 let tryAgain = document.getElementById("try");
 
-/*  ----------- describing disks , drawDisc function is written in the variable  ---------*/
+/*  ----------- describing disks ---------*/
+
+function drawDisc() {
+  ctx.beginPath();
+  ctx.rect(this.x, this.y, this.width, this.height);
+  ctx.fillStyle = this.color;
+  ctx.fill();
+}
 
 let firstDisc = {
   x: c.width / 4 - 110,
@@ -29,12 +36,8 @@ let firstDisc = {
   width: DISC_WIDTH,
   height: DISC_HEIGHT,
   diskId: 1,
-  drawDisc: function () {
-    ctx.beginPath();
-    ctx.rect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle = "green";
-    ctx.fill();
-  },
+  color: "green",
+  drawDisc: drawDisc,
 };
 
 let secondDisc = {
@@ -43,12 +46,8 @@ let secondDisc = {
   width: DISC_WIDTH - 20,
   height: DISC_HEIGHT,
   diskId: 2,
-  drawDisc: function () {
-    ctx.beginPath();
-    ctx.rect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle = "yellow";
-    ctx.fill();
-  },
+  color: "yellow",
+  drawDisc: drawDisc,
 };
 
 let thirdDisc = {
@@ -57,12 +56,8 @@ let thirdDisc = {
   width: DISC_WIDTH - 40,
   height: DISC_HEIGHT,
   diskId: 3,
-  drawDisc: function () {
-    ctx.beginPath();
-    ctx.rect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle = "red";
-    ctx.fill();
-  },
+  color: "red",
+  drawDisc: drawDisc,
 };
 
 let fourthDisc = {
@@ -71,12 +66,8 @@ let fourthDisc = {
   width: DISC_WIDTH - 60,
   height: DISC_HEIGHT,
   diskId: 4,
-  drawDisc: function () {
-    ctx.beginPath();
-    ctx.rect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle = "orange";
-    ctx.fill();
-  },
+  color: "orange",
+  drawDisc: drawDisc,
 };
 
 // ---------- defining font style and height
@@ -152,7 +143,7 @@ function drawLayout() {
   firstTower = [firstDisc, secondDisc, thirdDisc, fourthDisc];
 
   for (let i = 0; i < firstTower.length; i++) {
-    firstTower[i].drawDisc();
+    firstTower[i].drawDisc.bind(firstTower[i])();
   }
 }
 
@@ -241,10 +232,7 @@ function gameAlert() {
 
 // ----------- pushes and pops disks and repaints animation
 function moveDiscTo(sourceAndTarget) {
-  if (
-    (sourceAndTarget[0] !== null || sourceAndTarget[0] !== undefined) &&
-    (sourceAndTarget[1] !== null || sourceAndTarget[1] !== undefined)
-  ) {
+  if (sourceAndTarget[0] && sourceAndTarget[1]) {
     if (sourceAndTarget[0] === sourceAndTarget[1]) {
       event.preventDefault();
     } else {
@@ -460,11 +448,11 @@ function moveDiscTo(sourceAndTarget) {
 function drawDiscs() {
   destinationTower = [];
 
-  firstTower.map((tower) => tower.drawDisc());
+  firstTower.forEach((tower) => tower.drawDisc());
 
-  secondTower.map((tower) => tower.drawDisc());
+  secondTower.forEach((tower) => tower.drawDisc());
 
-  thirdTower.map((tower) => tower.drawDisc());
+  thirdTower.forEach((tower) => tower.drawDisc());
 }
 
 // ----- function to calculate and set the co-ordinates of disks depending upon the placement of bars
