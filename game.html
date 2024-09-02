@@ -1,268 +1,71 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Tower of Hanoi</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
 
-<head>
-	<title>Tower of Hanoi</title>
-	<style>
-		html * {
-			font-family: Arial, Helvetica, sans-serif;
-		}
+  <body>
+    <div class="topMenu">
+      <div class="movclass">Moves : <span id="move">0</span></div>
+      <div class="resetdiv">
+        <button class="resetBtn" onclick="reset()">Reset game</button>
+      </div>
+    </div>
+    <!-- ------------- canvas element to render/paint animation------------------ -->
+    <canvas
+      height="500"
+      width="700"
+      id="canvo"
+      style="border: 1px solid #000000"
+      oncontextmenu="return false"
+    >
+      Your browser does not support canvas !!!!
+    </canvas>
 
-		.custBtn {
-			background: transparent;
-			/* color: #ffffff; */
-			border: 0px;
-			/* border-radius: 20px; */
-			/* box-shadow: 0 1px 5px rgb(0, 0, 0); */
-			cursor: pointer;
-			height: 40px;
-			text-transform: capitalize;
-		}
+	<div id="gameAlert"></div>
 
-		.resetBtn {
-			background: #12ac12;
-			color: #ffffff;
-			border: 0px;
-			border-radius: 20px;
-			box-shadow: 0 1px 5px rgb(0, 0, 0);
-			cursor: pointer;
-			height: 40px;
-			text-transform: capitalize;
-		}
+    <!------------------------------ start screen --------------------->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1><strong>Tower of Hanoi</strong></h1>
+        </div>
+        <div class="modal-body">
+          <h2>Instructions</h2>
+          <h3>
+            <ul style="list-style-type: disc">
+              <li>
+                Use left mouse click to select source tower and right mouse
+                click to select target tower.
+              </li>
+              <li>The goal is to stack discs on the middle tower.</li>
+              <li>Only smaller disc can rest on a bigger disc.</li>
+            </ul>
+          </h3>
+          <button id="close" class="custBtn glow">Start game</button>
+        </div>
+      </div>
+    </div>
 
+    <!------------------------------ close screen --------------------->
 
-		body {
-			overflow: hidden;
-		}
+    <div id="myModal1" class="modal1">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Tower of Hanoi</h2>
+        </div>
+        <div class="modal-body">
+          <div id="msg"></div>
+          <div id="endScore"></div>
+          <div id="endMoves"></div>
+          <button id="try" class="custBtn">Play again</button>
+        </div>
+      </div>
+    </div>
 
-		#canvo {
-			position: fixed;
-			top: 80px;
-			left: 300px;
-		}
-
-		.disk {
-			border-radius: 10px;
-		}
-
-		.movclass {
-			position: relative;
-			top: 20px;
-			left: 700px;
-			color: red;
-		}
-
-		/*-------------------------- new css added here ---------------------------------*/
-
-		/* The Modal (background) for start screen */
-		.modal {
-			display: none;
-			position: fixed;
-			z-index: 1;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			overflow: auto;
-			background-color: rgb(0, 0, 0);
-			background-color: rgba(0, 0, 0, 0.6);
-			-webkit-animation-name: fadeIn;
-			-webkit-animation-duration: 0.4s;
-			-moz-animation-name: fadeIn;
-			-moz-animation-duration: 0.4s;
-			animation-name: fadeIn;
-			animation-duration: 0.4s;
-			font-family: 'Lucida Sans';
-		}
-
-
-		/* The Modal (background) for end /  greeting screen */
-		.modal1 {
-			display: none;
-			position: fixed;
-			z-index: 1;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			font-family: 'Lucida Sans';
-			overflow: auto;
-			background-color: rgb(0, 0, 0);
-			background-color: rgba(0, 0, 0, 0.4);
-			-webkit-animation-name: fadeIn;
-			-webkit-animation-duration: 0.4s;
-			-moz-animation-name: fadeIn;
-			-moz-animation-duration: 0.4s;
-			animation-name: fadeIn;
-			animation-duration: 0.4s;
-			text-align: center;
-		}
-
-		/* Modal Content */
-		.modal-content {
-			position: fixed;
-			bottom: 0;
-			top: 100px;
-			width: 100%;
-			color: rgba(255, 255, 255, 1);
-			-webkit-animation-name: slideIn;
-			-webkit-animation-duration: 0.4s;
-			animation-name: slideIn;
-			animation-duration: 0.4s
-		}
-
-		/* The Close Button */
-		.modal-header {
-			padding: 2px 16px;
-			text-align: center;
-			color: white;
-		}
-
-		.modal-body {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-		}
-
-
-		/* animation for modal box appearance */
-
-		@-webkit-keyframes slideIn {
-			from {
-				bottom: -300px;
-				opacity: 0
-			}
-
-			to {
-				bottom: 0;
-				opacity: 1
-			}
-		}
-
-		@keyframes slideIn {
-			from {
-				bottom: -300px;
-				opacity: 0
-			}
-
-			to {
-				bottom: 0;
-				opacity: 1
-			}
-		}
-
-		@-webkit-keyframes fadeIn {
-			from {
-				opacity: 0
-			}
-
-			to {
-				opacity: 1
-			}
-		}
-
-		@keyframes fadeIn {
-			from {
-				opacity: 0
-			}
-
-			to {
-				opacity: 1
-			}
-		}
-
-		.resetdiv {
-			position: relative;
-			top: 5px;
-			left: 400px;
-		}
-
-		/* glowing css */
-		.glow {
-			font-size: 80px;
-			color: #fff;
-			text-align: center;
-			-webkit-animation: glow 1s ease-in-out infinite alternate;
-			-moz-animation: glow 1s ease-in-out infinite alternate;
-			animation: glow 1s ease-in-out infinite alternate;
-		}
-
-		@keyframes glow {
-			from {
-				text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
-			}
-
-			to {
-				text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
-			}
-		}
-
-		@-webkit-keyframes glow {
-			from {
-				text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
-			}
-
-			to {
-				text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
-			}
-		}
-	</style>
-
-</head>
-
-<body>
-	<div class="movclass">Moves : <span id="move">0</span></div>
-	<div class="resetdiv"><button class="resetBtn" onclick="reset()">Reset game</button></div>
-
-	<!-- ------------- canvas element to render/paint animation------------------ -->
-	<canvas height="500" width="700" id="canvo" style="border:1px solid #000000;" oncontextmenu="return false">
-		Your browser does not support canvas !!!!
-	</canvas>
-
-	<!------------------------------ start screen --------------------->
-	<div id="myModal" class="modal">
-		<!-- Modal content -->
-		<div class="modal-content">
-			<div class="modal-header">
-				<!-- <span class="close">&times;</span> -->
-				<h1><strong>Tower of Hanoi</strong></h1>
-			</div>
-			<div class="modal-body">
-				<h1>Instructions</h1>
-				<h3>
-					<ul style="list-style-type:disc">
-						<li>Use left mouse click to select source tower and right mouse click to select target tower.
-						</li>
-						<li>Stack discs on the middle tower.</li>
-						<li>Only a smaller disc can rest on a bigger disc.</li>
-					</ul>
-				</h3>
-				<button id="close" class="custBtn glow">Start game</button>
-			</div>
-		</div>
-	</div>
-
-
-	<!------------------------------ close screen --------------------->
-
-	<div id="myModal1" class="modal1">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2>Tower of Hanoi</h2>
-			</div>
-			<div class="modal-body">
-				<div id="msg"></div>
-				<div id="endscore"></div>
-				<div id="endmoves"></div>
-				<button id="try" class="custBtn">Play again</button>
-			</div>
-		</div>
-	</div>
-
-	<!------------------------------ close screen ------------------- -->
-
-</body>
-<script src="game.js" defer></script>
-
+    <!------------------------------ close screen ------------------- -->
+  </body>
+  <script src="game.js" defer></script>
 </html>
